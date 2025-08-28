@@ -6,7 +6,7 @@
 
 ## Overview
 
-This repository contains the implementation and evaluation code for generating Digital Elevation Models (DEMs) from Synthetic Aperture Radar (SAR) imagery using deep learning approaches. We compare three state-of-the-art models:
+This repository contains the implementation and evaluation code for generating Digital Elevation Models (DEMs) from Synthetic Aperture Radar (SAR) imagery using deep learning approaches. We compare deep learning models:
 
 - **DPT (Dense Prediction Transformer)** with L1 loss
 - **Pix2PixHD** - High-resolution image-to-image translation
@@ -16,7 +16,7 @@ Our approach demonstrates robust DEM generation from single-channel SAR imagery,
 
 ## 📊 Dataset
 
-The complete dataset including training data, test data, and pre-trained model weights is available on Harvard Dataverse:
+The complete test data and pre-trained model weights are available on Harvard Dataverse:
 
 **[Download Dataset and Model Weights](https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/YFR2GM)**
 
@@ -37,17 +37,20 @@ After downloading from Harvard Dataverse, organize the files as follows:
     │   └── im2height_ep81.pth    # Im2Height model (28MB)
     ├── data/
     │   ├── testing/               # Test dataset
-    │   │   ├── sar/              # SAR input images
-    │   │   └── dem/              # Ground truth DEMs
+    │   │   ├── AFGHANISTAN_0/
+    │   │   │   ├── data/         # SAR input images
+    │   │   │   └── label/        # Ground truth DEMs
     │   └── regional_dem/         # Regional SAR data for large-scale generation
+    │       ├── clipped_sar.tif
+    │       ├── clipped_coarse_dem_1km.tif
+    │       └── clipped_ground_truth.tif
 
 ## 🚀 Installation
 
 ### Prerequisites
 
 - Python 3.8 or higher
-- CUDA-capable GPU (recommended: NVIDIA GPU with 8GB+ VRAM)
-- 16GB+ RAM
+- CUDA-capable GPU (recommended)
 
 ### Setup Environment
 
@@ -70,55 +73,47 @@ Or using the simplified environment (without specific builds):
 
 ## 💻 Usage
 
-### Model Inference on Test Data
+### Single Image Inference
 
-Generate DEMs from SAR images using pre-trained models:
+Generate DEM from a single SAR image:
 
     python src/model_inference.py \
-        --model dpt-l1 \
-        --weights model_weights/dpt-l1_ep200.pth \
-        --input_dir data/testing/sar \
-        --output_dir outputs/predictions
-
-Available models:
-- `dpt-l1`: Dense Prediction Transformer with L1 loss
-- `pix2pixhd`: Pix2PixHD model
-- `im2height`: Im2Height model
+        --sar_path data/testing/AFGHANISTAN_0/data/AFGHANISTAN_y0x24064_DESCENDING.tif \
+        --dem_path data/testing/AFGHANISTAN_0/label/AFGHANISTAN_y0x24064_DESCENDING.tif \
+        --output-dir outputs/images/ \
+        --dpt_path model_weights/dpt-l1_ep200.pth \
+        --pix2pixhd_path model_weights/pix2pixHD_ep200.pth \
+        --im2height_path model_weights/im2height_ep81.pth
 
 ### Regional DEM Generation
 
 Generate large-scale regional DEMs with calibration:
 
     python src/regional_dem_generation.py \
-        --model dpt-l1 \
-        --weights model_weights/dpt-l1_ep200.pth \
-        --input data/regional_dem/sar_mosaic.tif \
-        --output outputs/regional_dem/calibrated_dem.tif \
-        --calibration coarse_dem
+        --sar_path data/regional_dem/clipped_sar.tif \
+        --model_path model_weights/dpt-l1_ep200.pth \
+        --output_path outputs/regional_dem/dpt_l1_dem.tif \
+        --calibration coarse_dem \
+        --coarse_dem data/regional_dem/clipped_coarse_dem_1km.tif \
+        --overlap 96 \
+        --region_size 128
 
 Calibration options:
-- `coarse_dem`: Statistical matching with coarse resolution DEM
-- `point`: Point-based calibration using IDW interpolation
 - `global`: Global min/max elevation calibration
+- `coarse_dem`: Statistical matching with coarse resolution DEM (default)
+- `idw`: IDW interpolation using control points
 
-### Batch Evaluation
-
-Evaluate model performance on the test dataset:
-
-    python src/model_inference.py \
-        --evaluate \
-        --model all \
-        --test_dir data/testing \
-        --output_dir outputs/evaluation
-
-This will generate:
-- Prediction visualizations for each test image
-- Quantitative metrics (MAE, RMSE, SSIM)
-- Comparison plots between models
+Additional parameters:
+- `--overlap`: Tile overlap in pixels (default: 96, must be < 384)
+- `--region_size`: Region size for coarse DEM matching (default: 128)
+- `--num_control_points`: Number of control points for IDW (default: 100)
+- `--optimize_tiles`: Enable tile offset optimization for seamless mosaicing
+- `--device`: Compute device, cuda or cpu (default: cuda)
 
 ## 📈 Model Performance
 
 Performance metrics on the test dataset:
+
 | Model | MAE (m) ↓ | RMSE (m) ↓ | SSIM ↑ |
 |-------|-----------|------------|--------|
 | **DPT-L1** | **41.0** | **50.8** | **0.801** |
@@ -128,6 +123,7 @@ Performance metrics on the test dataset:
 ↓ Lower is better | ↑ Higher is better
 
 ## 🗂️ Repository Structure
+
     sar2dem/
     ├── models/                   # Model architectures
     │   ├── midas.py             # DPT/MiDaS implementation
@@ -140,10 +136,11 @@ Performance metrics on the test dataset:
     └── outputs/                # Generated outputs (created at runtime)
 
 ## 📝 Citation
-If you use this code or dataset in your research, please cite our paper:
 
+If you use this code or dataset in your research, please cite our paper.
 
 ## 📄 License
+
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## 🙏 Acknowledgments
