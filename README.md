@@ -6,7 +6,7 @@
 
 ## Overview
 
-This repository contains the implementation and evaluation code for generating Digital Elevation Models (DEMs) from Synthetic Aperture Radar (SAR) imagery using deep learning approaches. We compare deep learning models:
+This repository contains the implementation and evaluation code for generating Digital Elevation Models (DEMs) from Synthetic Aperture Radar (SAR) imagery using deep learning approaches. We compare three deep learning models:
 
 - **DPT (Dense Prediction Transformer)** with L1 loss
 - **Pix2PixHD** - High-resolution image-to-image translation
