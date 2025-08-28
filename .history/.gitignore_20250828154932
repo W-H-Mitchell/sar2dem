@@ -1,0 +1,32 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.env
+
+# Model weights (too large for GitHub)
+models/*.pth
+models/*.pt
+
+# Data files
+data/**/*.tif
+data/**/*.tiff
+!data/sample/*.tif
+
+# Outputs
+outputs/*
+*.png
+*.jpg
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
