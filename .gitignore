@@ -30,3 +30,6 @@ outputs/*.tif
 # OS
 .DS_Store
 Thumbs.db
+model_weights/*.pth
+.history/
+*.pth
