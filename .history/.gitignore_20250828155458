@@ -10,7 +10,7 @@ venv/
 
 # Model weights (too large for GitHub)
 model_weights/*.pth
-model_weights/*.pt
+*.pt
 
 # Data files
 data/**/*.tif

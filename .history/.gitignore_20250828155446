@@ -9,8 +9,8 @@ venv/
 .env
 
 # Model weights (too large for GitHub)
-model_weights/*.pth
-model_weights/*.pt
+*.pth
+models/*.pt
 
 # Data files
 data/**/*.tif
