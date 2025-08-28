@@ -28,6 +28,7 @@ The dataset includes:
 
 ### Dataset Structure
 After downloading from Harvard Dataverse, organize the files as follows:
+
 sar2dem/
 ├── model_weights/
 │   ├── dpt-l1_ep200.pth      # DPT model with L1 loss (1.4GB)
