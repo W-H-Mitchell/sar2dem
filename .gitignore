@@ -13,6 +13,7 @@ model_weights/*.pth
 model_weights/*.pt
 
 # Data files
+data/*.tif
 data/**/*.tif
 data/**/*.tiff
 !data/sample/*.tif
