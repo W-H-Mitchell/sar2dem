@@ -152,7 +152,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 📧 Contact
 
 For questions, issues, or collaborations, please contact:
-- William Mitchell - [wmitch@mit.edu]
+- William Mitchell - [whamitch@mit.edu]
 - Open an issue on [GitHub](https://github.com/W-H-Mitchell/sar2dem/issues)
 
 ---
